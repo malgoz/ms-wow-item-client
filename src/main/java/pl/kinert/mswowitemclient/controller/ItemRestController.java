@@ -36,9 +36,9 @@ public class ItemRestController {
         return itemClassService.getItemClass(id);
     }
 
-//    @GetMapping("/item/{id}")
-//    public ItemDTO getItemById(@PathVariable long id) throws URISyntaxException {
-//        return itemService.getItemById(id);
-//    }
+    @GetMapping("/item/{id}")
+    public ItemDTO getItemById(@PathVariable long id) throws URISyntaxException {
+        return itemService.getItemById(id);
+    }
 
 }
