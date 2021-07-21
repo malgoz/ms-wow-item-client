@@ -1,9 +1,7 @@
 package pl.kinert.mswowitemclient.service;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 import pl.kinert.mswowitemclient.client.ItemClient;
 import pl.kinert.mswowitemclient.jpa.model.ItemClass;
 import pl.kinert.mswowitemclient.jpa.model.ItemSubclass;

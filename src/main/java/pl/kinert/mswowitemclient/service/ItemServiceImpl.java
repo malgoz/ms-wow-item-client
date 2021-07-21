@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+import pl.kinert.mswowitemclient.client.ItemClient;
 import pl.kinert.mswowitemclient.jpa.model.*;
 import pl.kinert.mswowitemclient.jpa.repository.ArmorRepository;
 import pl.kinert.mswowitemclient.jpa.repository.ItemRepository;
@@ -28,9 +29,6 @@ public class ItemServiceImpl implements ItemService {
     @Value("${battlenet.namespace.locale.string}")
     private String battlenetNamespaceLocale;
 
-    @Value("${read.only}")
-    private boolean readOnly;
-
     private final TokenService tokenService;
 
     private final ItemClassService itemClassService;
@@ -43,12 +41,15 @@ public class ItemServiceImpl implements ItemService {
 
     private final StatisticRepository statisticRepository;
 
+    private final ItemClient itemClient;
+
     public ItemServiceImpl(TokenService tokenService,
                            ItemClassService itemClassService,
                            ItemRepository itemRepository,
                            WeaponRepository weaponRepository,
                            ArmorRepository armorRepository,
-                           StatisticRepository statisticRepository
+                           StatisticRepository statisticRepository,
+                           ItemClient itemClient
                            ){
         this.tokenService = tokenService;
         this.itemClassService = itemClassService;
@@ -56,17 +57,12 @@ public class ItemServiceImpl implements ItemService {
         this.armorRepository = armorRepository;
         this.weaponRepository = weaponRepository;
         this.statisticRepository = statisticRepository;
+        this.itemClient = itemClient;
     }
 
     public ItemDTO getItemById(long id) throws URISyntaxException {
-        String token = tokenService.getToken();
-        URI uri = new URI(battlenetBaseUrl + "/item/" + id + "?" + battlenetNamespaceLocale + token);
-        ItemDTO item = new RestTemplate().getForObject(
-                uri,
-                ItemDTO.class);
-        if (!readOnly) {
-            mapAndSaveItem(item);
-        }
+        ItemDTO item = itemClient.getItemById(id);
+        mapAndSaveItem(item);
         return item;
     }
 
